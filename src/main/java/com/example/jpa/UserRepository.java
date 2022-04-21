@@ -69,6 +69,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("select new com.example.jpa.UserDepartVo(u.userName,u.code,u.email,u.gender,u.mobile,d.name) " +
             "from  User  u,Department d where u.departmentId=d.id and u.gender=111")
     List<UserDepartVo> selectUserDepart2();
+
     // 查询人工智能学院所有男用户的编号、姓名、邮箱、电话、及其所在部门名称。
     // select u.code,u.user_name,u.gender,u.email,u.phone,d.name from tb_user u,tb_department d where u.department_id=d.id and gender=1 and d.name='人工智能学院'
+    @Query("select new com.example.jpa.UserDepartVo(u.userName,u.code,u.email,u.gender,u.mobile,d.name) " +
+            "from  User  u,Department d where u.departmentId=d.id and u.gender=111 and d.name='人工智能学院'")
+    List<UserDepartVo> selectUserDepart3();
 }

@@ -102,6 +102,11 @@ public class UserController {
     public List<UserDepartVo> selectUserDepart2() {
         return userRepository.selectUserDepart2();
     }
+
+    @PostMapping("/selectUserDepart3")
+    public List<UserDepartVo> selectUserDepart3() {
+        return userRepository.selectUserDepart3();
+    }
 }
 
 
