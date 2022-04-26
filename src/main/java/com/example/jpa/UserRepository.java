@@ -1,5 +1,8 @@
 package com.example.jpa;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -75,4 +78,29 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("select new com.example.jpa.UserDepartVo(u.userName,u.code,u.email,u.gender,u.mobile,d.name) " +
             "from  User  u,Department d where u.departmentId=d.id and u.gender=111 and d.name='人工智能学院'")
     List<UserDepartVo> selectUserDepart3();
+
+    // 原生sql查询
+    // 根据用户名和密码查询用户（用户名不允许重复）：@Query
+    @Query(value = "select * from tb_user where  user_name = ?1 and password = ?2", nativeQuery = true)
+    List<User> getNamePasswordSql(String userName, String password);
+
+    // 查询所有用户的编号、姓名、邮箱、电话、及其所在部门名称。
+    // select u.user_name,u.gender,u.email,d.name from tb_user u,tb_department d where u.department_id=d.id
+    @Query(value = "select u.code,u.user_name as userName,u.gender,u.phone as mobile,d.name " +
+            "from tb_user u, tb_department d where u.department_id=d.id", nativeQuery = true)
+    List<UserDepartInterVo> selectUserDepartSql();
+
+    // 查询人工智能学院所有男用户的编号、姓名、邮箱、电话、及其所在部门名称。
+    // select u.code,u.user_name,u.gender,u.email,u.phone,d.name from tb_user u,tb_department d where u.department_id=d.id and gender=1 and d.name='人工智能学院'
+//    @Query(value = "select u.code,u.user_name as userName,u.gender,u.phone as mobile,d.name " +
+//            "from tb_user u, tb_department d where u.department_id=d.id and u.gender=111 and d.name='人工智能学院'", nativeQuery = true)
+//    List<UserDepartInterVo> selectUserDepart3Sql();
+
+    // 分页排序：所有男用户
+    @Query(value = "select * from tb_user where gender=?1", nativeQuery = true)
+    Page<User> selectUserGenderSql(Integer gender, Pageable pageable);
+
+    // 分页排序：所有男用户
+    @Query(value = "select * from tb_user where gender=?1", nativeQuery = true)
+    List<User> selectSortUserGenderSql(Integer gender, Sort sort);
 }

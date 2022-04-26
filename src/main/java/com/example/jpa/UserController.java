@@ -1,20 +1,28 @@
 package com.example.jpa;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.print.attribute.standard.PageRanges;
 import java.util.List;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
+    final
     UserRepository userRepository;
+
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @PostMapping("/add")
     public String add(User user) {
@@ -106,6 +114,33 @@ public class UserController {
     @PostMapping("/selectUserDepart3")
     public List<UserDepartVo> selectUserDepart3() {
         return userRepository.selectUserDepart3();
+    }
+
+    @PostMapping("/getNamePasswordSql")
+    public List<User> getNamePasswordSql(String userName, String password) {
+        return userRepository.getNamePasswordSql(userName, password);
+    }
+
+    @PostMapping("/selectUserDepartSql")
+    public List<UserDepartInterVo> selectUserDepartSql() {
+        return userRepository.selectUserDepartSql();
+    }
+
+//    @PostMapping("/selectUserDepartSql")
+//    public List<UserDepartInterVo> selectUserDepart3Sql() {
+//        return userRepository.selectUserDepart3Sql();
+//    }
+
+    @PostMapping("/selectUserGenderSql")
+    public Page<User> selectUserGenderSql(Integer gender, Integer currentPage, Integer sizePage) {
+        Pageable pageable = PageRequest.of(currentPage, sizePage);
+        return userRepository.selectUserGenderSql(gender, pageable);
+    }
+
+    @PostMapping("/selectSortUserGenderSql")
+    public List<User> selectSortUserGenderSql(Integer gender) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        return userRepository.selectSortUserGenderSql(gender, sort);
     }
 }
 
